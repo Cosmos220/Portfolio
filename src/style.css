@@ -1,0 +1,467 @@
+@import "tailwindcss";
+
+/* ============================================================
+   Thème — charcoal + crème + accent violet (identique au Next)
+   ============================================================ */
+
+:root {
+  --background: #000000; /* noir pur */
+  --surface: #121214;
+  --card: #101012;
+  --foreground: #ededee; /* blanc neutre (plus de crème chaude) */
+  --muted: #9a9aa0; /* gris neutre */
+  --muted-2: #5f5f66;
+  --border: rgba(255, 255, 255, 0.1);
+  --border-strong: rgba(255, 255, 255, 0.22);
+  /* Palette monochrome : l'« accent » est un gris clair / blanc. */
+  --accent: #d7d7db;
+  --accent-bright: #ffffff;
+  --accent-foreground: #0a0a0a;
+
+  --font-hanken: "Hanken Grotesk", system-ui, sans-serif;
+  --font-geist-mono: "Geist Mono", ui-monospace, monospace;
+  /* Police bitmap : réservée aux intitulés, badges et au nom du hero. */
+  --font-silkscreen: "Silkscreen", "Geist Mono", ui-monospace, monospace;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-2: var(--muted-2);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-accent: var(--accent);
+  --color-accent-bright: var(--accent-bright);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --font-sans: var(--font-hanken);
+  --font-mono: var(--font-geist-mono);
+  --font-pixel: var(--font-silkscreen);
+}
+
+* {
+  border-color: var(--border);
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--background);
+}
+
+/* Lenis (défilement fluide) */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+  /* Fond noir uni. Il était transparent pour laisser voir le canvas Beams
+     placé derrière sur les pages projets ; ce canvas a été retiré. */
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-hanken);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+#app {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--accent) 35%, transparent);
+  color: #fff;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  /* Angles vifs : un contour arrondi trahirait immédiatement le thème. */
+  border-radius: 0;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+/* ============================================================
+   PRIMITIVES
+   Une seule définition par rôle (panneau, puce, bouton), pour que deux
+   composants qui font la même chose se ressemblent vraiment. Avant, chaque
+   fichier réinventait ses marges et son épaisseur de bordure.
+   ============================================================ */
+
+/* ---- panneau ------------------------------------------------
+   Le glassmorphisme — flou, arêtes lumineuses dégradées, ombres diffuses —
+   est l'exact opposé d'un rendu bitmap : ce sont des effets qui n'existent
+   que parce qu'on dispose de sous-pixels et de dégradés continus.
+   D'où un panneau opaque à angles vifs, avec une ombre portée PLEINE et
+   décalée (sans flou) : la signature des interfaces d'époque, et ça reste
+   sobre. */
+.panel {
+  position: relative;
+  border-radius: 0;
+  background: var(--card);
+  border: 2px solid var(--border);
+  box-shadow: 6px 6px 0 0 rgba(255, 255, 255, 0.06);
+  /* `steps` plutôt qu'une courbe douce : le mouvement avance par crans,
+     comme un rafraîchissement d'écran. */
+  transition:
+    transform 0.1s steps(2, end),
+    box-shadow 0.1s steps(2, end),
+    border-color 0.1s steps(2, end);
+}
+.panel:hover {
+  border-color: var(--border-strong);
+  box-shadow: 10px 10px 0 0 rgba(255, 255, 255, 0.14);
+}
+/* le décalage ne s'applique qu'aux panneaux cliquables */
+.panel.is-interactive:hover {
+  transform: translate(-4px, -4px);
+}
+
+/* ---- puce (étiquette technique) -----------------------------
+   Bordure fine assumée : sur un élément de ~24px de haut, 2px écraseraient
+   le texte. C'est le seul endroit où l'on déroge à l'épaisseur des panneaux. */
+.chip {
+  display: inline-block;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  padding: 0.25rem 0.625rem;
+  font-family: var(--font-geist-mono);
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+/* ---- bouton secondaire --------------------------------------
+   Même géométrie que `.btn-primary` (mêmes marges, même décalage au survol),
+   en contour plutôt qu'en plein. */
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 2px solid var(--border-strong);
+  background: transparent;
+  color: var(--foreground);
+  padding: 0.8rem 1.6rem;
+  font-family: var(--font-silkscreen);
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  transition:
+    border-color 0.12s steps(2, end),
+    color 0.12s steps(2, end),
+    transform 0.12s steps(2, end);
+}
+.btn-ghost:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translate(-2px, -2px);
+}
+.btn-ghost svg {
+  transition: transform 0.12s steps(2, end);
+}
+.btn-ghost:hover svg {
+  transform: translateX(3px);
+}
+
+/* ---- visuels de projet : gris au repos, couleur au survol --
+   La palette du site est strictement monochrome ; des captures en couleur
+   la trouaient. Les désaturer au repos les y raccroche, et rend la couleur
+   au survol — l'image devient une récompense plutôt qu'un décor.
+
+   La désaturation passe par `steps` comme le reste du site : un fondu continu
+   sur un filtre trahirait le registre lissé qu'on a écarté partout ailleurs. */
+/* La transition couvre AUSSI `transform` : cette règle n'étant dans aucune
+   couche, elle l'emporte sur `transition-transform` de Tailwind et
+   supprimerait le zoom au survol si on l'omettait.
+
+   La couleur revient en 14 paliers sur 0,38 s : assez fin pour que le
+   dégradé paraisse continu, tout en gardant la granularité du thème. Le
+   nombre de paliers est conservé en raccourcissant la durée, sinon la
+   bascule redeviendrait sautée. */
+.project-visual {
+  filter: grayscale(1);
+  transition:
+    filter 0.38s steps(14, end),
+    transform 0.32s steps(8, end);
+}
+.group:hover .project-visual,
+.group:focus-visible .project-visual {
+  filter: grayscale(0);
+}
+
+/* Un changement de saturation n'est pas du mouvement : ce réglage vise le
+   vertige et les déplacements. On garde donc le fondu — le supprimer rendrait
+   la bascule instantanée, donc PLUS agressive — et on ne coupe que le zoom. */
+@media (prefers-reduced-motion: reduce) {
+  .project-visual {
+    transition: filter 0.38s steps(14, end);
+  }
+  .group:hover .project-visual,
+  .group:focus-visible .project-visual {
+    transform: none;
+  }
+}
+
+/* ---- champ tramé (remplace les halos dégradés) -------------
+   Un dégradé radial flou est un effet « premium » : il suppose des milliers
+   de valeurs intermédiaires. L'équivalent bitmap, c'est le tramage — une
+   trame régulière de points, atténuée vers les bords par un masque.
+   Même rôle (attirer l'œil au centre), vocabulaire opposé. */
+.dither-field {
+  background-image: repeating-conic-gradient(
+    rgba(255, 255, 255, 0.9) 0 25%,
+    transparent 0 50%
+  );
+  background-size: 4px 4px;
+  mask-image: radial-gradient(circle at center, #000 0%, transparent 70%);
+  -webkit-mask-image: radial-gradient(
+    circle at center,
+    #000 0%,
+    transparent 70%
+  );
+}
+
+/* ---- marquee horizontal infini ---------------------------- */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.animate-marquee {
+  animation: marquee 32s linear infinite;
+}
+.marquee-mask {
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 8%,
+    #000 92%,
+    transparent
+  );
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+/* ---- reveal (fade-up au scroll) --------------------------- */
+/* Fondu SANS déplacement. Un `steps()` appliqué à une translation de 24px
+   la découpe en sauts de 6px : ça ne se lit pas comme un effet mais comme un
+   défaut d'affichage. On garde donc le crantage sur l'opacité seule — l'objet
+   apparaît par paliers de luminosité, ce qui reste cohérent avec le thème
+   sans jamais donner l'impression que ça saccade. */
+.reveal {
+  opacity: 0;
+  transition: opacity 0.24s steps(4, end);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.reveal.is-in {
+  opacity: 1;
+}
+
+/* ---- stack technique : items qui s'allument en cascade ------
+   Chaque étiquette apparaît par paliers (`steps`) plutôt qu'en fondu
+   continu : c'est ce qui donne la sensation d'un menu de jeu qui se
+   charge ligne par ligne, cohérent avec la police bitmap. */
+.stack-item {
+  opacity: 0;
+}
+.reveal.is-in .stack-item {
+  animation: stackPop 0.18s steps(3, end) forwards;
+  animation-delay: var(--item-delay, 0ms);
+}
+@keyframes stackPop {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ---- liens de navigation : trait actif + survol ----------- */
+.nav-link {
+  position: relative;
+  padding-bottom: 4px;
+}
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.13s steps(3, end);
+}
+.nav-link:hover::after,
+.nav-link.is-active::after {
+  transform: scaleX(1);
+}
+
+/* ---- bouton principal (CTA blanc, bien visible) ----------- */
+/* Bouton « touche » : rectangle plein posé sur son ombre. Au survol il
+   s'enfonce sur son ombre au lieu de léviter — le halo diffus d'origine
+   appartenait au registre premium. */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 0;
+  background: #ffffff;
+  color: #0a0a0a;
+  padding: 0.8rem 1.6rem;
+  font-family: var(--font-silkscreen);
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  box-shadow: 5px 5px 0 0 var(--border-strong);
+  transition:
+    transform 0.12s steps(2, end),
+    box-shadow 0.12s steps(2, end);
+}
+.btn-primary:hover {
+  transform: translate(3px, 3px);
+  box-shadow: 2px 2px 0 0 var(--border-strong);
+}
+.btn-primary:active {
+  transform: translate(5px, 5px);
+  box-shadow: 0 0 0 0 var(--border-strong);
+}
+.btn-primary svg {
+  transition: transform 0.12s steps(2, end);
+}
+.btn-primary:hover svg {
+  transform: translateX(3px);
+}
+
+/* ---- entrée du hero (prénom + portrait) ------------------- */
+.hero-rise {
+  opacity: 0;
+  transition: opacity 0.26s steps(4, end);
+}
+.hero-rise.is-in {
+  opacity: 1;
+}
+.hero-rise--delay {
+  transition-delay: 0.07s;
+}
+
+/* ---- transition entre les pages --------------------------- */
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.15s steps(3, end);
+}
+.page-enter-from {
+  opacity: 0;
+}
+.page-leave-to {
+  opacity: 0;
+}
+
+/* ---- fondu noir uniforme entre les pages ------------------ */
+/* z-index < 50 (la navbar) pour que le fondu ne recouvre PAS la nav bar. */
+.black-fade {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: #000;
+  pointer-events: none;
+  animation: blackFade 0.4s ease-out forwards;
+}
+@keyframes blackFade {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes introFade {
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .animate-marquee {
+    animation: none;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  /* Sans ça les étiquettes resteraient à opacity 0 : leur apparition passe
+     par une animation, qui ne se joue pas en mouvement réduit. */
+  .stack-item,
+  .reveal.is-in .stack-item {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+  .glass-card {
+    transition: none;
+  }
+  .glass-card:hover {
+    transform: none;
+  }
+  .page-enter-active,
+  .page-leave-active {
+    transition: none;
+  }
+  .page-enter-from,
+  .page-leave-to {
+    opacity: 1;
+    transform: none;
+  }
+  .black-fade {
+    animation-duration: 1ms;
+  }
+  .hero-rise {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .nav-link::after {
+    transition: none;
+  }
+  .btn-primary {
+    transition: none;
+  }
+  .btn-primary:hover {
+    transform: none;
+  }
+  .btn-primary:hover svg {
+    transform: none;
+  }
+}

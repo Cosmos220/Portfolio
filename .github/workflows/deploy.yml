@@ -1,0 +1,62 @@
+name: Déploiement GitHub Pages
+
+on:
+  push:
+    # Le dépôt peut être créé avec l'une ou l'autre branche par défaut.
+    branches: [main, master]
+  workflow_dispatch:
+
+# Requis par actions/deploy-pages : le déploiement s'authentifie par OIDC.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Deux pushs rapprochés ne doivent pas se déployer en désordre.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build
+        env:
+          # Déduit du nom réel du dépôt : rien à modifier en cas de renommage.
+          # Pour une page utilisateur (<user>.github.io), remplacer par "/".
+          VITE_BASE: /${{ github.event.repository.name }}/
+        run: npm run build
+
+      - name: Repli SPA
+        # GitHub Pages ne connaît pas les routes du routeur : une visite
+        # directe sur /projets chercherait un fichier qui n'existe pas.
+        # Servir la coquille de l'application en 404 laisse le routeur
+        # prendre la main. On copie le index.html BUILD, pour que les noms
+        # de fichiers avec empreinte restent corrects.
+        run: cp dist/index.html dist/404.html
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
