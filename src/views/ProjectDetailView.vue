@@ -4,6 +4,7 @@ import { useRouter } from "vue-router";
 import { getProject, projects } from "../data/content";
 import { asset } from "../data/assets";
 import Reveal from "../components/Reveal.vue";
+import PhoneMockup from "../components/ui/PhoneMockup.vue";
 
 const props = defineProps<{ slug: string }>();
 const router = useRouter();
@@ -28,6 +29,16 @@ const gallery = computed(() => {
   return imgs
     .map((src) => asset(src))
     .filter((src): src is string => !!src && !failed.has(src));
+});
+
+/* Version « téléphone » : on garde les entrées dont la capture manque, pour
+   que le châssis reste affiché. Filtrer comme la galerie classique ferait
+   disparaître toute la section tant qu'aucune image n'est en place. */
+const phoneShots = computed(() => {
+  const p = project.value;
+  if (!p) return [];
+  const imgs = p.images?.length ? p.images : p.image ? [p.image] : [];
+  return imgs.map((src) => asset(src));
 });
 
 // Projet suivant (navigation circulaire) pour garder l'exploration vivante.
@@ -97,20 +108,36 @@ const nextProject = computed(() => {
 
     <!-- Galerie -->
     <div class="mx-auto mt-12 w-full max-w-5xl px-5 sm:px-8">
-      <Reveal v-for="(src, i) in gallery" :key="i" :delay="i * 30" class="mb-5">
-        <div
-          class="panel overflow-hidden"
-        >
-          <img
+      <!-- Interfaces mobiles : chaque capture dans un châssis de téléphone.
+           Une capture en portrait affichée pleine largeur serait démesurée
+           et illisible. -->
+      <Reveal v-if="project.mockup === 'phone' && phoneShots.length">
+        <div class="flex flex-wrap items-start justify-center gap-8 sm:gap-10">
+          <PhoneMockup
+            v-for="(src, i) in phoneShots"
+            :key="i"
             :src="src"
-            :alt="`${project.title} — visuel ${i + 1}`"
-            loading="lazy"
-            @error="failed.add(src)"
-            class="block h-auto w-full"
+            :alt="`${project.title} — écran ${i + 1}`"
           />
         </div>
       </Reveal>
-      <Reveal v-if="!gallery.length">
+
+      <template v-else>
+        <Reveal v-for="(src, i) in gallery" :key="i" :delay="i * 30" class="mb-5">
+          <div class="panel overflow-hidden">
+            <img
+              :src="src"
+              :alt="`${project.title} — visuel ${i + 1}`"
+              loading="lazy"
+              @error="failed.add(src)"
+              class="block h-auto w-full"
+            />
+          </div>
+        </Reveal>
+      </template>
+      <!-- En mode téléphone, les châssis servent déjà de repère : ce
+           placeholder ferait doublon. -->
+      <Reveal v-if="!gallery.length && project.mockup !== 'phone'">
         <div
           class="grid aspect-[16/9] place-items-center border border-border"
           style="background: var(--surface)"

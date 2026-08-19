@@ -23,7 +23,7 @@ export const profile = {
     "Je suis actuellement à la recherche de nouvelles opportunités. Que ce soit pour une question, une offre de stage, d'alternance ou simplement pour échanger, le moyen le plus rapide de me joindre est par e-mail.",
   bio: [
     "Je m’appelle Loïck Davi et je suis actuellement étudiant à l’IUT de Lens en informatique, avec une spécialisation en développement d’applications. Passionné par l’univers du code depuis mes débuts, j’ai choisi ce cursus pour transformer ma curiosité en une expertise technique solide. Mon objectif est simple : concevoir des solutions numériques qui soient à la fois performantes, intuitives et utiles aux utilisateurs.",
-    "Aujourd'hui, je souhaite mettre mon dynamisme et ma capacité d'apprentissage au service d'une entreprise innovante. Je suis activement à la recherche d'une alternance débutant en avril 2026. Rigoureux, autonome et doté d'un bon esprit d'équipe, je suis prêt à m’investir pleinement dans vos projets pour continuer à progresser tout en apportant une réelle valeur ajoutée à votre équipe de développement."
+    "Aujourd'hui, je souhaite mettre mon dynamisme et ma capacité d'apprentissage au service d'une entreprise innovante. Je suis activement à la recherche d'un stage pour ma 3 éme année. Rigoureux, autonome et doté d'un bon esprit d'équipe, je suis prêt à m’investir pleinement dans vos projets pour continuer à progresser tout en apportant une réelle valeur ajoutée à votre équipe de développement."
   ],
   email: "daviloick@gmail.com",
   calLink: "",
@@ -37,7 +37,6 @@ export const about = {
   heading: "Derrière le code.",
   facts: [
     { label: "Formation", value: "BUT Informatique · IUT de Lens" },
-    { label: "Objectif", value: "Alternance — avril 2026" },
     { label: "Basé à", value: "Hauts-de-France, France" },
   ],
 };
@@ -93,6 +92,10 @@ export type Project = {
   image?: string; // visuel de couverture
   images?: string[]; // galerie (page détail) ; défaut = [image]
   featured?: boolean; // affiché sur la page d'accueil
+  /* Présentation de la galerie sur la page détail. « phone » encadre chaque
+     visuel dans un mockup de téléphone : indispensable pour une interface
+     conçue en portrait, qu'une image pleine largeur écraserait. */
+  mockup?: "phone";
 };
 
 /* ⭐ Pour mettre un projet en avant sur l'accueil : `featured: true`.
@@ -160,6 +163,32 @@ export const projects: Project[] = [
     featured: true,
   },
   {
+    slug: "coasterstreak",
+    title: "CoasterStreak",
+    description:
+      "Application mobile pour recenser parcs et coasters, et compter ses crédits.",
+    longDescription:
+      "CoasterStreak est une application web progressive destinée aux passionnés de montagnes russes. Elle recense les parcs, les attractions et leurs constructeurs, et permet à chacun de tenir le compte de ses « crédits » — le terme employé par les amateurs pour désigner un coaster déjà emprunté. Pensée pour le téléphone avant tout, avec une navigation par onglets, elle s'installe comme une application native et reste consultable depuis l'écran d'accueil.",
+    features: [
+      "Catalogue de parcs, de coasters et de constructeurs, avec fiches détaillées.",
+      "Compteur personnel de crédits et historique des rides, rattachés à un compte.",
+      "Volet social : suivre ses amis et comparer les compteurs.",
+      "Recherche transversale sur l'ensemble du catalogue.",
+      "PWA installable, interface conçue en priorité pour le mobile.",
+      "API dédiée isolée dans un conteneur, exposée derrière un reverse proxy.",
+    ],
+    tags: ["Vue.js", "PWA", "API REST", "Docker"],
+    liveUrl: "https://coasterstreak.loickdavi.fr",
+    image: "/assets/img/Projects/CoasterStreak/CoasterStreak_1.png",
+    images: [
+      "/assets/img/Projects/CoasterStreak/CoasterStreak_1.png",
+      "/assets/img/Projects/CoasterStreak/CoasterStreak_2.png",
+      "/assets/img/Projects/CoasterStreak/CoasterStreak_3.png",
+    ],
+    mockup: "phone",
+    featured: true,
+  },
+  {
     slug: "guessraudit",
     title: "GuessrAudit",
     description: "Une extension pour le site OpenGuessr.",
@@ -177,7 +206,15 @@ export const projects: Project[] = [
 ];
 
 /* Helpers projets — gardent les vues et le routeur sans logique dupliquée. */
-export const featuredProjects = projects.filter((p) => p.featured);
+
+/* L'accueil n'est qu'un aperçu : la page /projets présente l'ensemble.
+   On plafonne donc le nombre affiché plutôt que de compter sur le drapeau
+   `featured` seul — sinon l'accueil s'allongerait à chaque projet ajouté.
+   L'ordre de la liste ci-dessus décide lesquels passent. */
+export const HOME_PROJECTS_LIMIT = 3;
+export const featuredProjects = projects
+  .filter((p) => p.featured)
+  .slice(0, HOME_PROJECTS_LIMIT);
 export const getProject = (slug: string) =>
   projects.find((p) => p.slug === slug);
 

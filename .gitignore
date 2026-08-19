@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Configuration locale de l'outillage (serveur de dev)
+.claude/
