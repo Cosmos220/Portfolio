@@ -30,11 +30,36 @@ jobs:
 
       - run: npm ci
 
+      # Doit passer AVANT le build : c'est cette action qui nous apprend sous
+      # quel chemin le site sera réellement servi.
+      # `enablement` crée le site Pages s'il n'existe pas encore et le règle
+      # sur « GitHub Actions », sinon l'action échoue par un 404 tant que
+      # personne ne l'a activé à la main dans les réglages du dépôt.
+      - name: Configure Pages
+        id: pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      # Le chemin dépend du mode d'hébergement : /<dépôt>/ pour une page de
+      # projet, mais la RACINE pour une page utilisateur ou un domaine
+      # personnalisé. Plutôt que de déduire ça du nom du dépôt — ce qui ne
+      # peut pas voir un domaine personnalisé — on lit le chemin que
+      # l'API Pages renvoie elle-même.
+      - name: Normalise le chemin de base
+        id: base
+        run: |
+          p='${{ steps.pages.outputs.base_path }}'
+          # L'API renvoie "" ou "/" à la racine, "/dépôt" sinon ; Vite, lui,
+          # exige un slash final.
+          [ -z "$p" ] && p='/'
+          case "$p" in */) ;; *) p="$p/" ;; esac
+          echo "Chemin de base retenu : $p"
+          echo "value=$p" >> "$GITHUB_OUTPUT"
+
       - name: Build
         env:
-          # Déduit du nom réel du dépôt : rien à modifier en cas de renommage.
-          # Pour une page utilisateur (<user>.github.io), remplacer par "/".
-          VITE_BASE: /${{ github.event.repository.name }}/
+          VITE_BASE: ${{ steps.base.outputs.value }}
         run: npm run build
 
       - name: Repli SPA
@@ -44,8 +69,6 @@ jobs:
         # prendre la main. On copie le index.html BUILD, pour que les noms
         # de fichiers avec empreinte restent corrects.
         run: cp dist/index.html dist/404.html
-
-      - uses: actions/configure-pages@v5
 
       - uses: actions/upload-pages-artifact@v3
         with:
