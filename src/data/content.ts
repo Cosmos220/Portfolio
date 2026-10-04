@@ -189,6 +189,25 @@ export const projects: Project[] = [
     featured: true,
   },
   {
+    slug: "pyrotechclick ",
+    title: "PyrotechClick",
+    description:
+      "Survival game de feux d'artifice réalisé en 2 jours sous Godot — finaliste (top 7) de la Code Game Jam.",
+    longDescription:
+      "PyrotechClick est un jeu développé en 2 jours pendant une Code Game Jam, sur le thème « la fête des clics ». Le joueur affronte des vagues d'ennemis et doit les abattre à coup de feux d'artifice avant la fin du temps imparti. Réalisé par l'équipe Moonlight Studio (IUT de Lens, Université d'Artois), le jeu s'est classé parmi les 7 finalistes. J'y ai conçu plusieurs ennemis et corrigé des bugs.",
+    features: [
+      "Gameplay de survie : des vagues d'ennemis à abattre à coups de feux d'artifice, dans un temps imparti.",
+      "Thème « la fête des clics » : le tir repose sur le clic du joueur.",
+      "IA des ennemis : ils repèrent et suivent le joueur pour le poursuivre sur la carte.",
+      "Plusieurs types d'ennemis, que j'ai conçus et équilibrés.",
+      "Enregistrement du score, exportable en image ou en PDF.",
+      "Travail d'équipe à 5 sous Godot, avec Git pour versionner le projet pendant les 2 jours de jam.",
+    ],
+    tags: ["Godot", "Git", "Game Jam"],
+    image: "/assets/img/Projects/PyrotechClick/PyrotechClick_Logo.png",
+    featured: false,
+  },
+  {
     slug: "guessraudit",
     title: "GuessrAudit",
     description: "Une extension pour le site OpenGuessr.",
