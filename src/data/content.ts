@@ -68,17 +68,44 @@ export const marqueeItems = [
   "Git"
 ];
 
-/* Stack technique — valeurs de démo, adapte à TA stack. */
+/* Stack technique, présentée en arbre de compétences (SkillTree.vue).
+   Quatre catégories : chacune occupe un quart de la roue, comme les arbres
+   d'un menu de compétences de jeu. Ajouter une catégorie redécoupe la roue. */
 export const stack: { title: string; items: string[] }[] = [
   {
-    title: "Langages & Frameworks",
-    items: ["Java", "Python", "PHP", "Laravel", "JavaScript", "TypeScript", "Vue.js", "Angular"],
+    title: "Langages",
+    items: ["Java", "Python", "PHP", "JavaScript", "TypeScript"],
   },
   {
-    title: "Outils & Base de données",
-    items: ["HTML5", "CSS3", "MySQL", "Podman", "Git"],
-  }
+    title: "Frameworks",
+    items: ["Laravel", "Vue.js", "Angular"],
+  },
+  {
+    title: "Web",
+    items: ["HTML5", "CSS3"],
+  },
+  {
+    title: "Outils & BDD",
+    items: ["MySQL", "Podman", "Git"],
+  },
 ];
+
+/* Ce qu'est chaque technologie, en une phrase (panneau de détail de l'arbre). */
+export const skillDescriptions: Record<string, string> = {
+  Java: "Langage orienté objet compilé pour la machine virtuelle Java (JVM).",
+  Python: "Langage interprété polyvalent et lisible, très utilisé pour les scripts et le back-end.",
+  PHP: "Langage côté serveur pensé pour le web, au cœur de nombreux sites dynamiques.",
+  JavaScript: "Le langage du navigateur : il rend les pages web interactives.",
+  TypeScript: "JavaScript avec des types, qui détecte les erreurs avant l'exécution.",
+  Laravel: "Framework PHP complet : routage, ORM, authentification, files d'attente.",
+  "Vue.js": "Framework JavaScript progressif pour construire des interfaces réactives.",
+  Angular: "Framework front-end structuré autour des composants et de TypeScript.",
+  HTML5: "Le langage de structure des pages web.",
+  CSS3: "Le langage de mise en forme du web : couleurs, mises en page, animations.",
+  MySQL: "Système de gestion de base de données relationnelle, interrogé en SQL.",
+  Podman: "Outil de conteneurs compatible Docker, qui fonctionne sans démon.",
+  Git: "Système de gestion de versions distribué.",
+};
 
 export type Project = {
   slug: string; // identifiant d'URL : /projets/<slug>

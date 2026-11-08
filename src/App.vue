@@ -4,6 +4,8 @@ import { useRoute } from "vue-router";
 import SiteHeader from "./components/SiteHeader.vue";
 import SiteFooter from "./components/SiteFooter.vue";
 import IntroLoader from "./components/IntroLoader.vue";
+import StatusHud from "./components/StatusHud.vue";
+import ObjectiveToast from "./components/ObjectiveToast.vue";
 import { useSmoothScroll } from "./composables/useSmoothScroll";
 
 const route = useRoute();
@@ -54,4 +56,11 @@ useSmoothScroll();
     <RouterView />
   </main>
   <SiteFooter />
+
+  <!-- Trame de balayage, sur toutes les pages -->
+  <div class="sys-scan" aria-hidden="true" />
+  <!-- Ligne d'état en bas à gauche -->
+  <StatusHud />
+  <!-- Consigne de la page, affichée à l'arrivée -->
+  <ObjectiveToast />
 </template>

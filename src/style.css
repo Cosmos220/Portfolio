@@ -384,22 +384,51 @@ a {
   opacity: 0;
 }
 
-/* ---- fondu noir uniforme entre les pages ------------------ */
-/* z-index < 50 (la navbar) pour que le fondu ne recouvre PAS la nav bar. */
+/* ---- coupure de signal entre les pages ---------------------------
+   Plutôt qu'un fondu, l'écran noir se découpe en bandes horizontales qui
+   s'amincissent par crans, avec un léger décalage latéral : le signal qui
+   décroche puis se rétablit, comme une caméra de surveillance piratée.
+   Une seule animation sur l'élément (pas sur ses pseudo-éléments) : App.vue
+   retire le voile sur `animationend`, qu'une animation de pseudo-élément
+   déclencherait trop tôt.
+   z-index < 50 (la navbar) pour que la coupure ne recouvre PAS la nav bar. */
+@property --cut {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 100%;
+}
 .black-fade {
   position: fixed;
   inset: 0;
   z-index: 40;
   background: #000;
   pointer-events: none;
-  animation: blackFade 0.4s ease-out forwards;
+  -webkit-mask-image: repeating-linear-gradient(#000 0 var(--cut), transparent var(--cut) 100%);
+  mask-image: repeating-linear-gradient(#000 0 var(--cut), transparent var(--cut) 100%);
+  -webkit-mask-size: 100% 7px;
+  mask-size: 100% 7px;
+  animation: sysCut 0.46s steps(7, end) forwards;
 }
-@keyframes blackFade {
-  from {
-    opacity: 1;
+@keyframes sysCut {
+  0% {
+    --cut: 100%;
+    transform: translateX(0);
   }
-  to {
-    opacity: 0;
+  30% {
+    --cut: 100%;
+    transform: translateX(-6px);
+  }
+  55% {
+    --cut: 55%;
+    transform: translateX(4px);
+  }
+  80% {
+    --cut: 20%;
+    transform: translateX(-2px);
+  }
+  100% {
+    --cut: 0%;
+    transform: translateX(0);
   }
 }
 
@@ -463,5 +492,234 @@ a {
   }
   .btn-primary:hover svg {
     transform: none;
+  }
+}
+
+/* ============================================================
+   THÈME « HACKER »
+   Inspiré des jeux d'infiltration numérique : l'interface de surveillance
+   d'une ville piratée : rapports d'analyse, fiches « profiler » sur chaque passant,
+   typographie brute héritée des terminaux DOS, réseaux de lignes qui
+   s'allument quand on prend la main, et un signal qui décroche (glitch)
+   dès qu'un hacker passe. Le site garde son noir et blanc strict : c'est
+   déjà la palette des écrans de surveillance, sans couleur de marque.
+   ============================================================ */
+
+/* ---- trame d'écran -----------------------------------------
+   Lignes de balayage très discrètes sur toute la page, comme un flux vidéo
+   de caméra de surveillance. Calque sans interaction. */
+.sys-scan {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.022) 0 1px,
+    transparent 1px 3px
+  );
+  animation: sysFlicker 6s steps(1, end) infinite;
+}
+/* Un micro-scintillement toutes les quelques secondes, jamais régulier
+   au point de devenir un clignotement. */
+@keyframes sysFlicker {
+  0%,
+  91%,
+  93%,
+  100% {
+    opacity: 1;
+  }
+  92% {
+    opacity: 0.35;
+  }
+}
+
+/* ---- glitch ------------------------------------------------
+   Deux copies du texte (attribut `data-text`) découpées en bandes et
+   décalées par crans : le texte « décroche » comme une image piratée.
+   Monochrome : une copie blanche, une grise, pas de séparation RVB
+   colorée qui trouerait la palette. Se joue au survol, ou une fois via la
+   classe `is-glitching` posée en JS. */
+.glitch {
+  position: relative;
+  display: inline-block;
+}
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+}
+.glitch::before {
+  color: var(--foreground);
+}
+.glitch::after {
+  color: var(--muted-2);
+}
+.glitch:hover::before,
+.glitch.is-glitching::before {
+  animation: glitchA 0.42s steps(1, end);
+}
+.glitch:hover::after,
+.glitch.is-glitching::after {
+  animation: glitchB 0.42s steps(1, end);
+}
+@keyframes glitchA {
+  0% {
+    opacity: 1;
+    clip-path: inset(10% 0 70% 0);
+    transform: translateX(-6px);
+  }
+  20% {
+    clip-path: inset(55% 0 20% 0);
+    transform: translateX(5px);
+  }
+  40% {
+    clip-path: inset(30% 0 50% 0);
+    transform: translateX(-3px);
+  }
+  60% {
+    clip-path: inset(75% 0 5% 0);
+    transform: translateX(4px);
+  }
+  80% {
+    clip-path: inset(0 0 85% 0);
+    transform: translateX(-2px);
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes glitchB {
+  0% {
+    opacity: 1;
+    clip-path: inset(65% 0 15% 0);
+    transform: translateX(5px);
+  }
+  25% {
+    clip-path: inset(5% 0 75% 0);
+    transform: translateX(-4px);
+  }
+  50% {
+    clip-path: inset(40% 0 40% 0);
+    transform: translateX(6px);
+  }
+  75% {
+    clip-path: inset(85% 0 0 0);
+    transform: translateX(-3px);
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* ---- crochets de ciblage -----------------------------------
+   Les quatre coins d'un cadre de visée, comme la mire qui se pose sur un
+   passant dans le profiler. Huit traits en dégradé, aucun élément en plus. */
+.sys-brackets {
+  --bk: 14px;
+  background:
+    linear-gradient(currentColor, currentColor) top left / var(--bk) 2px no-repeat,
+    linear-gradient(currentColor, currentColor) top left / 2px var(--bk) no-repeat,
+    linear-gradient(currentColor, currentColor) top right / var(--bk) 2px no-repeat,
+    linear-gradient(currentColor, currentColor) top right / 2px var(--bk) no-repeat,
+    linear-gradient(currentColor, currentColor) bottom left / var(--bk) 2px no-repeat,
+    linear-gradient(currentColor, currentColor) bottom left / 2px var(--bk) no-repeat,
+    linear-gradient(currentColor, currentColor) bottom right / var(--bk) 2px no-repeat,
+    linear-gradient(currentColor, currentColor) bottom right / 2px var(--bk) no-repeat;
+}
+
+/* ---- verrouillage sur les visuels de projet ----------------
+   Au survol d'une carte, la mire se resserre sur l'image et une étiquette
+   « Accéder_ » apparaît : le visiteur cible le projet comme Aiden cible
+   un appareil à pirater. */
+.card-lock {
+  --bk: 16px;
+  position: absolute;
+  inset: 12px;
+  z-index: 1;
+  color: #fff;
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(1.08);
+  transition:
+    opacity 0.12s steps(2, end),
+    transform 0.18s steps(3, end);
+}
+.card-tag {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  z-index: 1;
+  background: #fff;
+  color: #000;
+  padding: 2px 7px;
+  font-family: var(--font-silkscreen);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.12s steps(2, end);
+}
+.group:hover .card-lock,
+.group:focus-visible .card-lock {
+  opacity: 1;
+  transform: scale(1);
+}
+.group:hover .card-tag,
+.group:focus-visible .card-tag {
+  opacity: 1;
+}
+
+/* ---- lien actif = entrée de menu sélectionnée ---------------
+   Dans le menu principal du jeu, l'entrée choisie devient une barre
+   blanche pleine, texte noir. Le lien de la page en cours reprend ce
+   code ; le soulignement reste réservé au survol des autres liens. */
+.nav-link.is-active {
+  background: var(--foreground);
+  color: #000;
+  padding: 2px 8px;
+}
+.nav-link.is-active::after {
+  display: none;
+}
+
+/* ---- lignes de données -------------------------------------
+   Derrière le menu du jeu, des rangées de petits tirets horizontaux,
+   comme des lignes de texte caviardées dans un rapport de surveillance. */
+.data-rows {
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.9) 0 18px,
+    transparent 18px 26px,
+    rgba(255, 255, 255, 0.9) 26px 34px,
+    transparent 34px 58px
+  );
+  background-size: 100% 3px;
+  -webkit-mask-image:
+    repeating-linear-gradient(#000 0 3px, transparent 3px 22px),
+    radial-gradient(ellipse at center, #000 10%, transparent 75%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    repeating-linear-gradient(#000 0 3px, transparent 3px 22px),
+    radial-gradient(ellipse at center, #000 10%, transparent 75%);
+  mask-composite: intersect;
+}
+
+/* Placé après les règles du thème pour l'emporter à spécificité égale. */
+@media (prefers-reduced-motion: reduce) {
+  .sys-scan {
+    animation: none;
+  }
+  .card-lock {
+    transform: none;
+    transition: opacity 0.12s steps(2, end);
+  }
+  .glitch::before,
+  .glitch::after {
+    display: none;
   }
 }

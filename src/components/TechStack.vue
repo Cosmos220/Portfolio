@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { stack } from "../data/content";
 import Reveal from "./Reveal.vue";
 import TypeLine from "./ui/TypeLine.vue";
+import SkillTree from "./SkillTree.vue";
 </script>
 
 <template>
@@ -18,31 +18,12 @@ import TypeLine from "./ui/TypeLine.vue";
         </h2>
       </Reveal>
 
-      <div class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <Reveal v-for="(col, i) in stack" :key="col.title" :delay="i * 40">
-          <div class="panel h-full p-6">
-            <div class="flex items-baseline justify-between">
-              <h3 class="text-lg font-medium">{{ col.title }}</h3>
-              <span class="font-pixel text-xs text-muted-2">
-                {{ String(i + 1).padStart(2, "0") }}
-              </span>
-            </div>
-            <!-- Apparition en cascade, façon menu de jeu qui se charge ligne
-                 par ligne. Le délai cumule celui de la colonne pour que la
-                 vague traverse la grille de gauche à droite. -->
-            <ul class="mt-5 flex flex-wrap gap-2">
-              <li
-                v-for="(item, j) in col.items"
-                :key="item"
-                class="stack-item border-2 border-border bg-surface px-3 py-1.5 text-sm text-foreground/90 transition-colors hover:border-accent hover:text-accent"
-                :style="{ '--item-delay': `${i * 45 + j * 20}ms` }"
-              >
-                {{ item }}
-              </li>
-            </ul>
-          </div>
-        </Reveal>
-      </div>
+      <!-- Arbre de compétences, à la manière d'un menu de jeu -->
+      <Reveal :delay="40">
+        <div class="mt-12">
+          <SkillTree />
+        </div>
+      </Reveal>
     </div>
   </section>
 </template>

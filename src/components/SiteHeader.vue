@@ -18,11 +18,12 @@ onMounted(() => {
 });
 onBeforeUnmount(() => window.removeEventListener("scroll", onScroll));
 
+const brand = `${profile.firstName}_${profile.lastName}`;
+
 const nav = [
   { label: "Accueil", to: "/" },
   { label: "Projets", to: "/projets" },
   { label: "Contact", to: "/contact" },
-  { label: "Jeu", to: "/jeu" },
 ];
 </script>
 
@@ -38,11 +39,13 @@ const nav = [
     <div
       class="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8"
     >
+      <!-- Logo : prénom et nom soudés par un tiret bas, comme un identifiant. -->
       <RouterLink
         to="/"
-        class="font-pixel text-sm uppercase tracking-[0.06em] text-foreground transition-colors hover:text-accent"
+        class="glitch font-pixel text-sm uppercase tracking-[0.06em] text-foreground transition-colors hover:text-accent"
+        :data-text="brand"
       >
-        {{ profile.firstName }} {{ profile.lastName }}
+        {{ brand }}
       </RouterLink>
 
       <nav

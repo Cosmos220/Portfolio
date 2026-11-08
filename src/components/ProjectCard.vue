@@ -36,6 +36,9 @@ const imgFailed = ref(false);
           [ {{ project.title.toUpperCase() }} ]
         </span>
       </div>
+      <!-- Mire qui se verrouille sur le visuel au survol -->
+      <span aria-hidden="true" class="sys-brackets card-lock" />
+      <span aria-hidden="true" class="card-tag">Accéder_</span>
     </RouterLink>
 
     <div class="flex flex-1 flex-col p-6">
