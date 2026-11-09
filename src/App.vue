@@ -6,6 +6,8 @@ import SiteFooter from "./components/SiteFooter.vue";
 import IntroLoader from "./components/IntroLoader.vue";
 import StatusHud from "./components/StatusHud.vue";
 import ObjectiveToast from "./components/ObjectiveToast.vue";
+import TargetReticle from "./components/TargetReticle.vue";
+import ScanMode from "./components/ScanMode.vue";
 import { useSmoothScroll } from "./composables/useSmoothScroll";
 
 const route = useRoute();
@@ -63,4 +65,8 @@ useSmoothScroll();
   <StatusHud />
   <!-- Consigne de la page, affichée à l'arrivée -->
   <ObjectiveToast />
+  <!-- Mire de ciblage qui se verrouille sur les éléments cliquables -->
+  <TargetReticle />
+  <!-- Scan (touche S) : révèle ce qui est cliquable -->
+  <ScanMode />
 </template>

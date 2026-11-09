@@ -56,6 +56,7 @@ const nav = [
           v-for="l in nav"
           :key="l.to"
           :to="l.to"
+          v-scramble
           class="nav-link transition-colors"
           :class="isActive(l.to)
               ? 'is-active text-foreground'
@@ -70,6 +71,7 @@ const nav = [
           :href="l.href"
           target="_blank"
           rel="noopener noreferrer"
+          v-scramble
           class="nav-link hidden text-foreground/70 transition-colors hover:text-foreground sm:inline"
         >
           {{ l.label }}

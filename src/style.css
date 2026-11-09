@@ -282,6 +282,30 @@ a {
   opacity: 1;
 }
 
+/* ---- titres : déchiffrement de gauche à droite --------------
+   Les titres de section se découvrent comme un texte caviardé dont on lève
+   le masque, en 14 crans. Découpage par `clip-path` (aucun déplacement du
+   texte : on a écarté les translations crantées, qui lisaient comme un bug).
+   Les marges négatives en haut et en bas évitent de rogner les hampes et
+   jambages quand l'interligne est serré. */
+.reveal h1,
+.reveal h2 {
+  clip-path: inset(-0.2em 100% -0.2em 0);
+}
+.reveal.is-in h1,
+.reveal.is-in h2 {
+  animation: headDecode 0.62s steps(14, end) forwards;
+  animation-delay: calc(var(--reveal-delay, 0ms) + 90ms);
+}
+@keyframes headDecode {
+  from {
+    clip-path: inset(-0.2em 100% -0.2em 0);
+  }
+  to {
+    clip-path: inset(-0.2em -2% -0.2em 0);
+  }
+}
+
 /* ---- stack technique : items qui s'allument en cascade ------
    Chaque étiquette apparaît par paliers (`steps`) plutôt qu'en fondu
    continu : c'est ce qui donne la sensation d'un menu de jeu qui se
@@ -450,6 +474,15 @@ a {
     transform: none;
     transition: none;
   }
+  /* Sans ça les titres resteraient entièrement rognés : leur apparition
+     passe par une animation, qui ne se joue pas en mouvement réduit. */
+  .reveal h1,
+  .reveal h2,
+  .reveal.is-in h1,
+  .reveal.is-in h2 {
+    clip-path: none;
+    animation: none;
+  }
   /* Sans ça les étiquettes resteraient à opacity 0 : leur apparition passe
      par une animation, qui ne se joue pas en mouvement réduit. */
   .stack-item,
@@ -504,6 +537,15 @@ a {
    dès qu'un hacker passe. Le site garde son noir et blanc strict : c'est
    déjà la palette des écrans de surveillance, sans couleur de marque.
    ============================================================ */
+
+/* ---- curseur masqué (la mire le remplace) ------------------
+   `!important` : les boutons et liens déclarent leur propre
+   `cursor: pointer`, qui sinon réapparaîtrait au survol. Posée par
+   TargetReticle uniquement quand la mire est active. */
+html.has-reticle,
+html.has-reticle * {
+  cursor: none !important;
+}
 
 /* ---- trame d'écran -----------------------------------------
    Lignes de balayage très discrètes sur toute la page, comme un flux vidéo
