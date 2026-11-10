@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref, watch } from "vue";
-import { about, profile, socials } from "../data/content";
+import { profile, profileCard, socials } from "../data/content";
 
 /* Fiche « profiler » rattachée au compte GitHub : photo encadrée, nom et
    lien en étiquettes blanches, données en bandeaux noirs de longueurs
@@ -31,13 +31,10 @@ const github = socials.find((s) => s.label === "GitHub")?.href ?? "";
 const handle = github.replace(/^https?:\/\/(www\.)?github\.com\//, "");
 const avatar = handle ? `https://github.com/${handle}.png?size=200` : "";
 
-/* Largeurs volontairement irrégulières : les bandeaux du profiler épousent
-   la longueur de leur texte, ils ne forment jamais une colonne propre. */
-const rows = [
-  { label: "Formation", value: about.facts[0]?.value ?? "" },
-  { label: "Profession", value: profile.role },
-  { label: "Statut", value: `${profile.availabilityStatus} · recherche de stage` },
-].filter((r) => r.value);
+/* Les lignes affichées sont celles de `profileCard` (une seule source,
+   dans content.ts). « Nom » n'y figure pas : il a sa propre étiquette en tête
+   de fiche. */
+const rows = profileCard.filter((r) => r.label !== "Nom" && r.value);
 
 /* ---- déchiffrement des lignes ------------------------------- */
 const lines = [

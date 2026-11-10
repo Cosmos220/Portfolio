@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, reactive } from "vue";
 import { useRouter } from "vue-router";
-import { getProject, projects } from "../data/content";
+import { getProject, projects, projectStatus } from "../data/content";
 import { asset } from "../data/assets";
 import Reveal from "../components/Reveal.vue";
 import PhoneMockup from "../components/ui/PhoneMockup.vue";
@@ -64,7 +64,11 @@ const nextProject = computed(() => {
           Tous les projets
         </RouterLink>
 
-        <h1 class="mt-6 text-4xl font-semibold tracking-tight sm:text-5xl">
+        <p class="mt-6 font-pixel text-xs uppercase tracking-[0.1em] text-accent">
+          PRJ-{{ String(projects.findIndex((p) => p.slug === project!.slug) + 1).padStart(3, "0") }}
+          <span class="text-muted-2">· {{ projectStatus(project) }}</span>
+        </p>
+        <h1 class="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
           {{ project.title }}
         </h1>
 

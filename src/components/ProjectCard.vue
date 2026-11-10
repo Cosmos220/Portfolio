@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import type { Project } from "../data/content";
+import { projects, projectStatus, type Project } from "../data/content";
 import { asset } from "../data/assets";
 
 /* Carte projet réutilisable — accueil (sélection) et page /projets (tous).
    La variante « solid » a été retirée : elle donnait deux apparences
    différentes au même composant selon la page. */
 defineProps<{ project: Project; delay?: number }>();
+
+/* Identifiant de dossier : position réelle dans la liste, jamais inventée. */
+const fileId = (slug: string) =>
+  `PRJ-${String(projects.findIndex((p) => p.slug === slug) + 1).padStart(3, "0")}`;
 
 // Si l'image manque (404), on retombe sur le placeholder au lieu d'une icône cassée.
 const imgFailed = ref(false);
@@ -39,6 +43,8 @@ const imgFailed = ref(false);
       <!-- Mire qui se verrouille sur le visuel au survol -->
       <span aria-hidden="true" class="sys-brackets card-lock" />
       <span aria-hidden="true" class="card-tag">Accéder_</span>
+      <!-- Étiquette de dossier -->
+      <span aria-hidden="true" class="card-id">{{ fileId(project.slug) }}</span>
     </RouterLink>
 
     <div class="flex flex-1 flex-col p-6">
@@ -64,6 +70,11 @@ const imgFailed = ref(false);
           </svg>
         </a>
       </div>
+
+      <p class="card-status mt-2">
+        <span class="card-status-dot" aria-hidden="true" />
+        <span class="sr-only">État du projet : </span>{{ projectStatus(project) }}
+      </p>
 
       <p class="mt-3 text-[15px] leading-relaxed text-muted">
         {{ project.description }}
@@ -91,3 +102,33 @@ const imgFailed = ref(false);
     </div>
   </article>
 </template>
+
+<style scoped>
+.card-id {
+  position: absolute;
+  left: 0.6rem;
+  top: 0.6rem;
+  padding: 2px 6px;
+  font-family: var(--font-silkscreen);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: var(--cyan);
+  background: rgba(6, 6, 6, 0.78);
+  border: 1px solid var(--border);
+}
+.card-status {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--font-silkscreen);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted-2);
+}
+.card-status-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--cyan);
+}
+</style>

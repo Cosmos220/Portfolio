@@ -49,8 +49,6 @@ onBeforeUnmount(() => {
       Naviguer
       <span class="sys-hud-key sys-hud-key--wide">Clic</span>
       Sélectionner
-      <span class="sys-hud-key">S</span>
-      Scanner
     </p>
   </div>
 </template>

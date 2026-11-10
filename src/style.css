@@ -5,18 +5,32 @@
    ============================================================ */
 
 :root {
-  --background: #000000; /* noir pur */
-  --surface: #121214;
-  --card: #101012;
-  --foreground: #ededee; /* blanc neutre (plus de crème chaude) */
-  --muted: #9a9aa0; /* gris neutre */
-  --muted-2: #5f5f66;
-  --border: rgba(255, 255, 255, 0.1);
-  --border-strong: rgba(255, 255, 255, 0.22);
-  /* Palette monochrome : l'« accent » est un gris clair / blanc. */
-  --accent: #d7d7db;
-  --accent-bright: #ffffff;
-  --accent-foreground: #0a0a0a;
+  /* ---- Palette ctOS ------------------------------------------
+     Noir et gris très sombres pour le décor, BLANC pour l'information
+     principale, CYAN et bleu électrique pour tout ce qui est interactif, et
+     ROUGE réservé aux alertes et anomalies (jamais décoratif : s'il y en a
+     partout, il ne signale plus rien).
+     Le noir et blanc strict d'avant disparaît, mais l'esprit reste : la
+     couleur sert à signaler, pas à décorer. */
+  --background: #000000;
+  --surface: #101010;
+  --card: #0a0a0a;
+  --foreground: #f1f1f1;
+  /* Gris bleutés. Tous au-dessus de 4,5:1 sur noir, sur carte et sur surface
+     (muted-2 valait 3,3:1 avant : illisible en petit corps). */
+  --muted: #a3a3a3;
+  --muted-2: #8c8c8c;
+  --border: rgba(255, 255, 255, 0.12);
+  --border-strong: rgba(255, 255, 255, 0.28);
+
+  --cyan: #3ee7ff;
+  --blue: #4d82ff;
+  --red: #ff4d66;
+
+  /* « Accent » = couleur des éléments interactifs. */
+  --accent: var(--cyan);
+  --accent-bright: #b8f6ff;
+  --accent-foreground: #021018;
 
   --font-hanken: "Hanken Grotesk", system-ui, sans-serif;
   --font-geist-mono: "Geist Mono", ui-monospace, monospace;
@@ -34,6 +48,9 @@
   --color-border: var(--border);
   --color-border-strong: var(--border-strong);
   --color-accent: var(--accent);
+  --color-cyan: var(--cyan);
+  --color-blue: var(--blue);
+  --color-red: var(--red);
   --color-accent-bright: var(--accent-bright);
   --color-accent-foreground: var(--accent-foreground);
 
@@ -68,8 +85,6 @@ html.lenis body {
 
 body {
   margin: 0;
-  /* Fond noir uni. Il était transparent pour laisser voir le canvas Beams
-     placé derrière sur les pages projets ; ce canvas a été retiré. */
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-hanken);
@@ -133,7 +148,7 @@ a {
 }
 .panel:hover {
   border-color: var(--border-strong);
-  box-shadow: 10px 10px 0 0 rgba(255, 255, 255, 0.14);
+  box-shadow: 10px 10px 0 0 rgba(255, 255, 255, 0.12);
 }
 /* le décalage ne s'applique qu'aux panneaux cliquables */
 .panel.is-interactive:hover {
@@ -187,9 +202,9 @@ a {
 }
 
 /* ---- visuels de projet : gris au repos, couleur au survol --
-   La palette du site est strictement monochrome ; des captures en couleur
-   la trouaient. Les désaturer au repos les y raccroche, et rend la couleur
-   au survol — l'image devient une récompense plutôt qu'un décor.
+   Les captures sont très colorées ; posées sur un décor sobre, noir et bleu
+   nuit, elles écrasent tout. Les désaturer au repos les y raccroche, et rend
+   la couleur au survol — l'image devient une récompense plutôt qu'un décor.
 
    La désaturation passe par `steps` comme le reste du site : un fondu continu
    sur un filtre trahirait le registre lissé qu'on a écarté partout ailleurs. */
@@ -764,4 +779,16 @@ html.has-reticle * {
   .glitch::after {
     display: none;
   }
+}
+
+/* Arrivée sur une caméra : la rubrique apparaît par à-coups, pas d'un bloc. */
+html.cam-reveal main {
+  animation: camReveal 0.6s steps(6, end) 1;
+}
+@keyframes camReveal {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html.cam-reveal main { animation: none; }
 }

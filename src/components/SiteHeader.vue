@@ -1,11 +1,27 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from "vue";
-import { useRoute } from "vue-router";
-import { profile, headerLinks } from "../data/content";
+import { useRouter } from "vue-router";
+import { profile } from "../data/content";
+import { useRubrics, type Rubric } from "../composables/useRubrics";
+import PhoneNav from "./PhoneNav.vue";
 
-const route = useRoute();
-function isActive(to: string) {
-  return to === "/" ? route.path === "/" : route.path.startsWith(to);
+const router = useRouter();
+const { rubrics, activeId, go } = useRubrics();
+
+/* Vrai lien (`href`) pour les rubriques : clic droit, ouverture dans un
+   nouvel onglet et lecteurs d'écran fonctionnent. Le clic simple est pris en
+   charge par `go`, qui ajoute le défilement jusqu'à la section. */
+function hrefOf(r: Rubric) {
+  return router.resolve({
+    path: r.path,
+    hash: r.section && r.section !== "top" ? `#${r.section}` : "",
+  }).href;
+}
+function onLink(e: MouseEvent, r: Rubric) {
+  // Clic modifié (nouvel onglet…) : on laisse faire le navigateur.
+  if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+  e.preventDefault();
+  void go(r);
 }
 
 const scrolled = ref(false);
@@ -19,12 +35,6 @@ onMounted(() => {
 onBeforeUnmount(() => window.removeEventListener("scroll", onScroll));
 
 const brand = `${profile.firstName}_${profile.lastName}`;
-
-const nav = [
-  { label: "Accueil", to: "/" },
-  { label: "Projets", to: "/projets" },
-  { label: "Contact", to: "/contact" },
-];
 </script>
 
 <template>
@@ -48,35 +58,31 @@ const nav = [
         {{ brand }}
       </RouterLink>
 
-      <nav
-        class="flex items-center gap-5 text-sm font-medium sm:gap-8"
-        aria-label="Navigation principale"
-      >
-        <RouterLink
-          v-for="l in nav"
-          :key="l.to"
-          :to="l.to"
-          v-scramble
-          class="nav-link transition-colors"
-          :class="isActive(l.to)
+      <div class="flex items-center gap-4 sm:gap-6">
+        <!-- Rubriques : visibles en permanence sur grand écran. Le menu
+             « smartphone » les reprend et les complète. -->
+        <nav
+          class="hidden items-center gap-6 text-sm font-medium lg:flex xl:gap-8"
+          aria-label="Navigation principale"
+        >
+          <a
+            v-for="r in rubrics"
+            :key="r.id"
+            :href="hrefOf(r)"
+            v-scramble
+            class="nav-link transition-colors"
+            :class="activeId === r.id
               ? 'is-active text-foreground'
-              : 'text-foreground/70 hover:text-foreground'
-          "
-        >
-          {{ l.label }}
-        </RouterLink>
-        <a
-          v-for="l in headerLinks"
-          :key="l.label"
-          :href="l.href"
-          target="_blank"
-          rel="noopener noreferrer"
-          v-scramble
-          class="nav-link hidden text-foreground/70 transition-colors hover:text-foreground sm:inline"
-        >
-          {{ l.label }}
-        </a>
-      </nav>
+              : 'text-foreground/70 hover:text-foreground'"
+            :aria-current="activeId === r.id ? 'page' : undefined"
+            @click="onLink($event, r)"
+          >
+            {{ r.label }}
+          </a>
+        </nav>
+
+        <div class="lg:hidden"><PhoneNav /></div>
+      </div>
     </div>
   </header>
 </template>
