@@ -4,21 +4,97 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#161618" />
+    <meta name="theme-color" content="#000000" />
+
+    <title>Loïck Davi — Futur développeur d'applications</title>
     <meta
       name="description"
-      content="Portfolio de Loïck Davi, futur développeur d'applications. Interfaces web modernes, performantes et soignées."
+      content="Portfolio de Loïck Davi, étudiant en BUT Informatique à l'IUT de Lens (parcours Réalisation d'applications), disponible pour un stage. Projets web, jeux et applications."
     />
+    <meta name="author" content="Loïck Davi" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <link rel="canonical" href="https://portfolio.loickdavi.fr/" />
+
+    <!-- Aperçu de lien (Open Graph / réseaux sociaux) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Loïck Davi — Portfolio" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:title" content="Loïck Davi — Futur développeur d'applications" />
+    <meta
+      property="og:description"
+      content="Portfolio de Loïck Davi, étudiant en BUT Informatique à l'IUT de Lens (parcours Réalisation d'applications), disponible pour un stage. Projets web, jeux et applications."
+    />
+    <meta property="og:url" content="https://portfolio.loickdavi.fr/" />
+    <meta property="og:image" content="https://portfolio.loickdavi.fr/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Loïck Davi, futur développeur d'applications — portfolio" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Loïck Davi — Futur développeur d'applications" />
+    <meta
+      name="twitter:description"
+      content="Portfolio de Loïck Davi, étudiant en BUT Informatique à l'IUT de Lens (parcours Réalisation d'applications), disponible pour un stage. Projets web, jeux et applications."
+    />
+    <meta name="twitter:image" content="https://portfolio.loickdavi.fr/og-image.png" />
+
+    <!-- Données structurées : la personne et le site -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://portfolio.loickdavi.fr/#site",
+            "url": "https://portfolio.loickdavi.fr/",
+            "name": "Loïck Davi — Portfolio",
+            "inLanguage": "fr-FR",
+            "author": { "@id": "https://portfolio.loickdavi.fr/#person" }
+          },
+          {
+            "@type": "Person",
+            "@id": "https://portfolio.loickdavi.fr/#person",
+            "name": "Loïck Davi",
+            "givenName": "Loïck",
+            "familyName": "Davi",
+            "url": "https://portfolio.loickdavi.fr/",
+            "image": "https://portfolio.loickdavi.fr/og-image.png",
+            "jobTitle": "Étudiant en BUT Informatique, développement d'applications",
+            "description": "Étudiant en BUT Informatique à l'IUT de Lens, parcours Réalisation d'applications, à la recherche d'un stage.",
+            "affiliation": { "@type": "CollegeOrUniversity", "name": "IUT de Lens" },
+            "address": { "@type": "PostalAddress", "addressRegion": "Hauts-de-France", "addressCountry": "FR" },
+            "sameAs": [
+              "https://www.linkedin.com/in/lo%C3%AFck-davi",
+              "https://github.com/Cosmos220"
+            ]
+          }
+        ]
+      }
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Silkscreen:wght@400;700&display=swap"
       rel="stylesheet"
     />
-    <title>Loïck Davi — Futur développeur d'applications</title>
   </head>
   <body>
     <div id="app"></div>
+    <!-- Contenu minimal pour les robots et navigateurs sans JavaScript -->
+    <noscript>
+      <main style="font-family: system-ui, sans-serif; max-width: 40rem; margin: 6rem auto; padding: 0 1.25rem; color: #f1f1f1">
+        <h1>Loïck Davi — Futur développeur d'applications</h1>
+        <p>
+          Étudiant en BUT Informatique à l'IUT de Lens, parcours Réalisation d'applications,
+          disponible pour un stage.
+        </p>
+        <ul>
+          <li><a href="/projets" style="color: #3ee7ff">Projets</a></li>
+          <li><a href="/contact" style="color: #3ee7ff">Contact</a></li>
+        </ul>
+        <p>Ce site nécessite JavaScript pour son affichage interactif.</p>
+      </main>
+    </noscript>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

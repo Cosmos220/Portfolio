@@ -3,6 +3,7 @@ import './style.css'
 import App from './App.vue'
 import { router } from './router'
 import { vScramble } from './directives/scramble'
+import { initSeo } from './composables/useSeo'
 
 /* Au rechargement, le navigateur replace la page là où on l'avait quittée :
    on arrivait au milieu de l'accueil (sur les compétences, par exemple),
@@ -11,5 +12,7 @@ import { vScramble } from './directives/scramble'
    pages reste géré par le `scrollBehavior` du routeur. */
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual'
 if (!location.hash) window.scrollTo(0, 0)
+
+initSeo(router)
 
 createApp(App).use(router).directive('scramble', vScramble).mount('#app')
