@@ -56,5 +56,12 @@ export function initSeo(router: Router) {
     setMeta('meta[name="twitter:title"]', "name", "twitter:title", title);
     setMeta('meta[name="twitter:description"]', "name", "twitter:description", description);
     setCanonical(url);
+    /* Seule l'accueil est indexée par les moteurs de recherche. */
+    setMeta(
+      'meta[name="robots"]',
+      "name",
+      "robots",
+      name === "home" ? "index, follow, max-image-preview:large" : "noindex, follow",
+    );
   });
 }

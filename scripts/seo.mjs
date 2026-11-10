@@ -39,6 +39,12 @@ function setMeta(html, attr, value) {
 function page(path, title, description) {
   const url = site + path;
   let h = template;
+  /* Seule l'accueil est indexée : les autres pages restent accessibles mais
+     « noindex » (le robot doit pouvoir les lire pour voir la consigne, donc
+     robots.txt ne les bloque pas). */
+  if (path !== "/") {
+    h = h.replace(/(<meta name="robots" content=")[^"]*(")/, (_, a, b) => a + "noindex, follow" + b);
+  }
   h = h.replace(/<title>[\s\S]*?<\/title>/, () => `<title>${esc(title)}</title>`);
   h = setMeta(h, 'name="description"', description);
   h = setMeta(h, 'property="og:title"', title);
@@ -75,6 +81,7 @@ const prio = (p) => (p === "/" ? "1.0" : p === "/projets" ? "0.9" : p === "/cont
 const sitemap =
   `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
   routes
+    .filter((r) => r.path === "/")
     .map(
       (r) =>
         `  <url><loc>${site}${r.path}</loc><lastmod>${today}</lastmod><priority>${prio(r.path)}</priority></url>`,
@@ -83,4 +90,4 @@ const sitemap =
   `\n</urlset>\n`;
 writeFileSync(join(dist, "sitemap.xml"), sitemap);
 
-console.log(`SEO : ${routes.length} pages + sitemap.xml + 404.html`);
+console.log(`SEO : ${routes.length} pages (accueil seule indexée) + sitemap.xml + 404.html`);
