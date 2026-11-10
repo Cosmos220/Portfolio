@@ -23,11 +23,6 @@ const routes: RouteRecordRaw[] = [
     name: "contact",
     component: () => import("../views/ContactView.vue"),
   },
-  {
-    path: "/jeu",
-    name: "game",
-    component: () => import("../views/GameView.vue"),
-  },
   // Tout chemin inconnu retombe sur l'accueil.
   { path: "/:pathMatch(.*)*", redirect: "/" },
 ];

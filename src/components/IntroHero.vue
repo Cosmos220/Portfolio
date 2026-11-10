@@ -4,6 +4,7 @@ import type { Ref } from "vue";
 import { profile } from "../data/content";
 import EtheralShadow from "./ui/EtheralShadow.vue";
 import PixelSprite from "./ui/PixelSprite.vue";
+import GithubProfiler from "./GithubProfiler.vue";
 
 /* Entrée du hero : on révèle prénom + portrait une fois le voile d'intro
    (loader accueil ou fondu noir) terminé, pour une apparition cohérente
@@ -55,7 +56,28 @@ onMounted(() => {
 onBeforeUnmount(() => {
   window.removeEventListener("scroll", onScroll);
   window.removeEventListener("resize", update);
+  window.clearInterval(glitchIv);
+  window.clearTimeout(glitchOff);
 });
+
+/* Le nom « décroche » à l'apparition, puis de temps en temps : un signal
+   piraté n'est jamais tout à fait stable. */
+const glitching = ref(false);
+let glitchIv: number | undefined;
+let glitchOff: number | undefined;
+function glitchOnce() {
+  glitching.value = true;
+  glitchOff = window.setTimeout(() => (glitching.value = false), 450);
+}
+if (!reduce) {
+  const stopReveal = watch(revealed, (v) => {
+    if (!v) return;
+    stopReveal();
+    glitchOnce();
+    glitchIv = window.setInterval(glitchOnce, 7000);
+  });
+}
+
 
 const nameStyle = computed(() =>
   reduce ? {} : { transform: `translateY(${progress.value * -120}px)` },
@@ -84,6 +106,11 @@ const fadeStyle = computed(() =>
     </div>
     <!-- léger voile pour la lisibilité -->
     <div class="pointer-events-none absolute inset-0 bg-background/35" />
+    <!-- rangées de données caviardées, comme derrière le menu du jeu -->
+    <div
+      aria-hidden="true"
+      class="data-rows pointer-events-none absolute inset-0 opacity-[0.07]"
+    />
 
     <!-- contenu -->
     <div
@@ -91,7 +118,7 @@ const fadeStyle = computed(() =>
       :style="fadeStyle"
     >
       <div
-        class="w-full"
+        class="grid w-full items-center gap-12 lg:grid-cols-[1fr_auto]"
       >
         <!-- GAUCHE : prénom + nom géants, alignés à gauche -->
         <div class="min-w-0" :style="nameStyle">
@@ -126,13 +153,22 @@ const fadeStyle = computed(() =>
             class="select-none text-left font-pixel font-normal leading-[1.05] tracking-[0.02em] text-foreground"
           >
             <span class="block text-[clamp(2.25rem,8vw,6.5rem)]">
-              {{ profile.firstName }}
+              <span
+                class="glitch"
+                :class="{ 'is-glitching': glitching }"
+                :data-text="profile.firstName"
+                >{{ profile.firstName }}</span
+              >
             </span>
             <span
               class="block text-[clamp(2.25rem,8vw,6.5rem)] text-muted"
             >
-              {{ profile.lastName
-              }}<span aria-hidden="true" class="hero-caret">_</span>
+              <span
+                class="glitch"
+                :class="{ 'is-glitching': glitching }"
+                :data-text="profile.lastName"
+                >{{ profile.lastName }}</span
+              ><span aria-hidden="true" class="hero-caret">_</span>
             </span>
           </h1>
 
@@ -151,6 +187,15 @@ const fadeStyle = computed(() =>
           </p>
           </div>
         </div>
+
+        <!-- DROITE : fiche profiler liée au compte GitHub -->
+        <aside
+          class="hero-rise hero-rise--delay hidden lg:block"
+          :class="{ 'is-in': revealed }"
+          aria-label="Fiche profil"
+        >
+          <GithubProfiler :active="revealed" />
+        </aside>
 
       </div>
     </div>
@@ -194,6 +239,12 @@ const fadeStyle = computed(() =>
   50% {
     transform: translateY(5px);
   }
+}
+
+/* La fiche se compose en cascade : on la retient tant que le voile
+   d'intro est là, sinon la cascade se jouerait dessous, sans témoin. */
+.hero-rise:not(.is-in) :deep(.gp *) {
+  animation-play-state: paused;
 }
 
 @media (prefers-reduced-motion: reduce) {

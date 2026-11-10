@@ -1,0 +1,24 @@
+{
+  "siteUrl": "https://portfolio.loickdavi.fr",
+  "siteName": "Loïck Davi — Portfolio",
+  "locale": "fr_FR",
+  "image": "/og-image.png",
+  "imageAlt": "Loïck Davi, futur développeur d'applications — portfolio",
+  "pages": {
+    "home": {
+      "path": "/",
+      "title": "Loïck Davi — Futur développeur d'applications",
+      "description": "Portfolio de Loïck Davi, étudiant en BUT Informatique à l'IUT de Lens (parcours Réalisation d'applications), disponible pour un stage. Projets web, jeux et applications."
+    },
+    "projects": {
+      "path": "/projets",
+      "title": "Projets — Loïck Davi",
+      "description": "Les projets de Loïck Davi, développeur d'applications : applications web, jeux et réalisations menées à l'IUT de Lens, avec technologies et code source."
+    },
+    "contact": {
+      "path": "/contact",
+      "title": "Contact — Loïck Davi",
+      "description": "Contacter Loïck Davi, étudiant en développement d'applications à la recherche d'un stage : e-mail, LinkedIn et GitHub."
+    }
+  }
+}

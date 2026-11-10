@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { computed, reactive } from "vue";
 import { useRouter } from "vue-router";
-import { getProject, projects } from "../data/content";
+import { getProject, projects, projectStatus } from "../data/content";
 import { asset } from "../data/assets";
 import Reveal from "../components/Reveal.vue";
 import PhoneMockup from "../components/ui/PhoneMockup.vue";
+import CamFrame from "../components/ui/CamFrame.vue";
 
 const props = defineProps<{ slug: string }>();
 const router = useRouter();
@@ -63,7 +64,11 @@ const nextProject = computed(() => {
           Tous les projets
         </RouterLink>
 
-        <h1 class="mt-6 text-4xl font-semibold tracking-tight sm:text-5xl">
+        <p class="mt-6 font-pixel text-xs uppercase tracking-[0.1em] text-accent">
+          PRJ-{{ String(projects.findIndex((p) => p.slug === project!.slug) + 1).padStart(3, "0") }}
+          <span class="text-muted-2">· {{ projectStatus(project) }}</span>
+        </p>
+        <h1 class="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
           {{ project.title }}
         </h1>
 
@@ -125,13 +130,16 @@ const nextProject = computed(() => {
       <template v-else>
         <Reveal v-for="(src, i) in gallery" :key="i" :delay="i * 30" class="mb-5">
           <div class="panel overflow-hidden">
-            <img
-              :src="src"
-              :alt="`${project.title} — visuel ${i + 1}`"
-              loading="lazy"
-              @error="failed.add(src)"
-              class="block h-auto w-full"
-            />
+            <!-- Chaque capture est présentée comme un flux de caméra. -->
+            <CamFrame :cam="`CAM_${String(i + 1).padStart(2, '0')}`" :caption="project.title">
+              <img
+                :src="src"
+                :alt="`${project.title} — visuel ${i + 1}`"
+                loading="lazy"
+                @error="failed.add(src)"
+                class="block h-auto w-full"
+              />
+            </CamFrame>
           </div>
         </Reveal>
       </template>

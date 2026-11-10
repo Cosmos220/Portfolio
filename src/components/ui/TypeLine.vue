@@ -1,6 +1,8 @@
 <script setup lang="ts">
-/* Texte qui « s'écrit » quand il entre dans le viewport, avec un curseur
-   d'arcade. Même idiome d'observation que Reveal.vue (seuil et rootMargin
+/* Texte qui « se déchiffre » quand il entre dans le viewport, avec un
+   curseur d'arcade : devant les lettres déjà écrites, quelques symboles
+   aléatoires défilent, comme un mot de passe cassé caractère par caractère
+   dans un film de hacker. Même idiome d'observation que Reveal.vue (seuil et rootMargin
    identiques) pour que la frappe se déclenche en même temps que les autres
    apparitions de la section.
 
@@ -32,6 +34,19 @@ const reduce =
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 const visibleText = computed(() => props.text.slice(0, shown.value));
+
+/* Symboles « en cours de déchiffrement ». Recalculés à chaque lettre
+   écrite (le calcul dépend de `shown`), donc ils changent à chaque cran. */
+const GLYPHS = "01#%&*+=<>/_?$";
+const scramble = computed(() => {
+  if (done.value) return "";
+  const n = Math.min(3, props.text.length - shown.value);
+  let out = "";
+  for (let i = 0; i < n; i++) {
+    out += GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+  }
+  return out;
+});
 const caretVisible = computed(() => !done.value || props.keepCaret);
 
 let obs: IntersectionObserver | null = null;
@@ -104,7 +119,8 @@ onBeforeUnmount(() => {
 
     <span aria-hidden="true">
       {{ visibleText
-      }}<span v-if="caretVisible" class="type-caret">_</span>
+      }}<span v-if="scramble" class="type-scramble">{{ scramble }}</span
+      ><span v-if="caretVisible" class="type-caret">_</span>
     </span>
   </span>
 </template>
@@ -127,6 +143,10 @@ onBeforeUnmount(() => {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border-width: 0;
+}
+
+.type-scramble {
+  opacity: 0.45;
 }
 
 /* Clignotement franc en `steps` : sensation d'écran de jeu, pas de fondu. */

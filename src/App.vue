@@ -4,6 +4,10 @@ import { useRoute } from "vue-router";
 import SiteHeader from "./components/SiteHeader.vue";
 import SiteFooter from "./components/SiteFooter.vue";
 import IntroLoader from "./components/IntroLoader.vue";
+import StatusHud from "./components/StatusHud.vue";
+import ObjectiveToast from "./components/ObjectiveToast.vue";
+import TargetReticle from "./components/TargetReticle.vue";
+import { useCityCamera } from "./composables/useCityCamera";
 import { useSmoothScroll } from "./composables/useSmoothScroll";
 
 const route = useRoute();
@@ -30,8 +34,15 @@ watch(
 // Les pages s'en servent pour révéler leur contenu APRÈS le voile.
 const introActive = computed(() => loading.value || fade.value);
 provide("introActive", introActive);
+/* Seule l'introduction, sans le fondu entre pages : les notifications doivent
+   pouvoir signaler un changement de page PENDANT ce fondu. */
+provide("loading", loading);
 
 useSmoothScroll();
+
+/* La caméra suit la navigation. Seule l'introduction la suspend : le fondu
+   entre pages ne doit PAS la retenir, le vol démarre pendant qu'il s'estompe. */
+useCityCamera(loading);
 </script>
 
 <template>
@@ -54,4 +65,13 @@ useSmoothScroll();
     <RouterView />
   </main>
   <SiteFooter />
+
+  <!-- Trame de balayage, sur toutes les pages -->
+  <div class="sys-scan" aria-hidden="true" />
+  <!-- Ligne d'état en bas à gauche -->
+  <StatusHud />
+  <!-- Consigne de la page, affichée à l'arrivée -->
+  <ObjectiveToast />
+  <!-- Mire de ciblage qui se verrouille sur les éléments cliquables -->
+  <TargetReticle />
 </template>

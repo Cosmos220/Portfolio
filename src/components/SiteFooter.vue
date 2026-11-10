@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { profile, socials } from "../data/content";
-import PixelSprite from "./ui/PixelSprite.vue";
+import LedMask from "./ui/LedMask.vue";
 import EasterEggCreeper from "./EasterEggCreeper.vue";
 
 const year = new Date().getFullYear();
+
 const nav = [
   { label: "Accueil", to: "/" },
   { label: "Projets", to: "/projets" },
   { label: "Contact", to: "/contact" },
-  { label: "Jeu", to: "/jeu" },
 ];
 </script>
 
@@ -22,8 +22,8 @@ const nav = [
           to="/"
           class="inline-flex items-center gap-2.5 font-pixel text-sm uppercase tracking-[0.06em] text-foreground transition-colors hover:text-accent"
         >
-          <PixelSprite name="invader" :size="18" class="text-accent" />
-          {{ profile.firstName }} {{ profile.lastName }}
+          <LedMask :size="22" class="text-accent" />
+          {{ profile.firstName }}_{{ profile.lastName }}
         </RouterLink>
         <p class="mt-2 max-w-xs text-sm text-muted-2">
           Étudiant en informatique · {{ profile.location }}
@@ -35,6 +35,7 @@ const nav = [
           v-for="l in nav"
           :key="l.to"
           :to="l.to"
+          v-scramble
           class="text-muted transition-colors hover:text-foreground"
         >
           {{ l.label }}
@@ -57,8 +58,14 @@ const nav = [
         class="mx-auto flex w-full max-w-6xl items-center gap-3 px-5 py-6 text-sm text-muted-2 sm:px-8"
       >
         © {{ year }} {{ profile.name }}. Tous droits réservés.
+        <span class="hidden font-mono text-xs text-muted-2 sm:inline">
+          // connexion sécurisée
+        </span>
         <EasterEggCreeper />
       </div>
     </div>
   </footer>
 </template>
+
+<style scoped>
+</style>

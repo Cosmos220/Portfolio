@@ -68,16 +68,96 @@ export const marqueeItems = [
   "Git"
 ];
 
-/* Stack technique — valeurs de démo, adapte à TA stack. */
+/* Stack technique, présentée en arbre de compétences (SkillTree.vue).
+   Quatre catégories : chacune occupe un quart de la roue, comme les arbres
+   d'un menu de compétences de jeu. Ajouter une catégorie redécoupe la roue. */
 export const stack: { title: string; items: string[] }[] = [
   {
-    title: "Langages & Frameworks",
-    items: ["Java", "Python", "PHP", "Laravel", "JavaScript", "TypeScript", "Vue.js", "Angular"],
+    title: "Langages",
+    items: ["Java", "Python", "PHP", "JavaScript", "TypeScript"],
   },
   {
-    title: "Outils & Base de données",
-    items: ["HTML5", "CSS3", "MySQL", "Podman", "Git"],
-  }
+    title: "Frameworks",
+    items: ["Laravel", "Vue.js", "Angular"],
+  },
+  {
+    title: "Web",
+    items: ["HTML5", "CSS3"],
+  },
+  {
+    title: "Outils & BDD",
+    items: ["MySQL", "Podman", "Git"],
+  },
+];
+
+/* Compétences, présentées en RÉSEAU (SkillNetwork.vue) : chaque techno est un
+   nœud, rattaché à sa catégorie, et relié aux technos qu'elle croise dans un
+   même projet.
+
+   Toutes viennent de ce portfolio : celles de la stack d'origine, plus celles
+   qui n'apparaissent que dans les tags de projets (Flask, JavaFX, Tailwind,
+   Docker, PWA, Godot, API REST). Rien n'est ajouté pour « faire plus
+   fourni ». */
+export const skillNetworkCategories: { title: string; items: string[] }[] = [
+  {
+    title: "Développement",
+    items: ["Java", "Python", "PHP", "JavaScript", "TypeScript"],
+  },
+  {
+    title: "Frameworks",
+    items: ["Laravel", "Vue.js", "Angular", "Flask", "JavaFX"],
+  },
+  {
+    title: "Bases de données",
+    items: ["MySQL"],
+  },
+  {
+    title: "API",
+    items: ["API REST"],
+  },
+  {
+    title: "Outils",
+    items: ["Git", "Podman", "Docker", "Godot"],
+  },
+  {
+    title: "UX / UI",
+    items: ["HTML5", "CSS3", "Tailwind CSS", "PWA"],
+  },
+];
+
+/* Ce qu'est chaque technologie, en une phrase (panneau de détail du réseau). */
+export const skillDescriptions: Record<string, string> = {
+  Java: "Langage orienté objet compilé pour la machine virtuelle Java (JVM).",
+  Python: "Langage interprété polyvalent et lisible, très utilisé pour les scripts et le back-end.",
+  PHP: "Langage côté serveur pensé pour le web, au cœur de nombreux sites dynamiques.",
+  JavaScript: "Le langage du navigateur : il rend les pages web interactives.",
+  TypeScript: "JavaScript avec des types, qui détecte les erreurs avant l'exécution.",
+  Laravel: "Framework PHP complet : routage, ORM, authentification, files d'attente.",
+  "Vue.js": "Framework JavaScript progressif pour construire des interfaces réactives.",
+  Angular: "Framework front-end structuré autour des composants et de TypeScript.",
+  Flask: "Micro-framework Python pour construire des API et des applications web légères.",
+  JavaFX: "Bibliothèque Java pour créer des interfaces graphiques d'applications de bureau.",
+  MySQL: "Système de gestion de base de données relationnelle, interrogé en SQL.",
+  "API REST": "Interface d'échange de données entre applications, via des requêtes HTTP normalisées.",
+  Git: "Système de gestion de versions distribué.",
+  Podman: "Outil de conteneurs compatible Docker, qui fonctionne sans démon.",
+  Docker: "Plateforme de conteneurs : l'application embarque tout ce dont elle a besoin pour s'exécuter.",
+  Godot: "Moteur de jeu open source, utilisé ici pour un projet de game jam.",
+  HTML5: "Le langage de structure des pages web.",
+  CSS3: "Le langage de mise en forme du web : couleurs, mises en page, animations.",
+  "Tailwind CSS": "Framework CSS utilitaire : les styles se composent directement dans le HTML.",
+  PWA: "Application web installable et utilisable hors ligne, qui se comporte comme une application native.",
+};
+
+/* Fiche « profiler » du hero. Les valeurs sont celles que vous avez fournies ;
+   rien d'autre n'est affiché (ni âge, ni revenu, ni donnée inventée). */
+export const profileCard = [
+  { label: "Nom", value: "Loïck Davi" },
+  { label: "Spécialité", value: "Développement d'applications" },
+  { label: "Formation", value: "BUT Informatique" },
+  { label: "Parcours", value: "Réalisation d'applications" },
+  { label: "Statut", value: "Disponible pour un stage" },
+  { label: "Localisation", value: "France" },
 ];
 
 export type Project = {
@@ -96,7 +176,20 @@ export type Project = {
      visuel dans un mockup de téléphone : indispensable pour une interface
      conçue en portrait, qu'une image pleine largeur écraserait. */
   mockup?: "phone";
+  /* État affiché sur la fiche. Absent = déduit des données (voir
+     `projectStatus`). À renseigner à la main si la déduction est fausse. */
+  status?: string;
 };
+
+/* État d'un projet, DÉDUIT de ce que l'on sait vraiment de lui : une adresse
+   en ligne, un dépôt public. Aucune valeur n'est inventée — sans l'une ni
+   l'autre, on dit simplement « Réalisé ». */
+export function projectStatus(p: Project): string {
+  if (p.status) return p.status;
+  if (p.liveUrl) return "En ligne";
+  if (p.github) return "Code public";
+  return "Réalisé";
+}
 
 /* ⭐ Pour mettre un projet en avant sur l'accueil : `featured: true`.
    Pour l'ajouter ailleurs, il apparaît automatiquement sur /projets. */
@@ -189,7 +282,7 @@ export const projects: Project[] = [
     featured: true,
   },
   {
-    slug: "pyrotechclick ",
+    slug: "pyrotechclick",
     title: "PyrotechClick",
     description:
       "Survival game de feux d'artifice réalisé en 2 jours sous Godot — finaliste (top 7) de la Code Game Jam.",

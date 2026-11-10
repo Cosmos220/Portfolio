@@ -4,6 +4,7 @@ import { profile, socials } from "../data/content";
 import Reveal from "../components/Reveal.vue";
 import TypeLine from "../components/ui/TypeLine.vue";
 import CvActions from "../components/CvActions.vue";
+import TraceRoute from "../components/TraceRoute.vue";
 
 const mailto = computed(
   () =>
@@ -62,6 +63,8 @@ const coords = computed(() => [
 
         <!-- Coordonnées + réseaux -->
         <Reveal :delay="40">
+          <div>
+            <TraceRoute class="mb-8" />
           <dl class="space-y-6">
             <div v-for="c in coords" :key="c.label">
               <dt class="font-pixel text-xs uppercase tracking-[0.06em] text-muted-2">
@@ -97,6 +100,7 @@ const coords = computed(() => [
               </dd>
             </div>
           </dl>
+          </div>
         </Reveal>
       </div>
     </div>
