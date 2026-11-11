@@ -7,8 +7,8 @@
   "pages": {
     "home": {
       "path": "/",
-      "title": "Loïck Davi — Futur développeur d'applications",
-      "description": "Portfolio de Loïck Davi, étudiant en BUT Informatique à l'IUT de Lens (parcours Réalisation d'applications), disponible pour un stage. Projets web, jeux et applications."
+      "title": "Loïck Davi — Développeur d'applications · Stage BUT Informatique",
+      "description": "Loïck Davi (Loick Davi), étudiant en BUT Informatique à l'IUT de Lens, parcours Réalisation d'applications, Hauts-de-France. Développeur web et applications (Vue.js, Laravel, PHP, Java), disponible pour un stage."
     },
     "projects": {
       "path": "/projets",
