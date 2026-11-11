@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { profile, socials } from "../data/content";
 import LedMask from "./ui/LedMask.vue";
-import EasterEggCreeper from "./EasterEggCreeper.vue";
 
 const year = new Date().getFullYear();
 
@@ -61,7 +60,6 @@ const nav = [
         <span class="hidden font-mono text-xs text-muted-2 sm:inline">
           // connexion sécurisée
         </span>
-        <EasterEggCreeper />
       </div>
     </div>
   </footer>

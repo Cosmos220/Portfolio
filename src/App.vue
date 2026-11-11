@@ -4,6 +4,7 @@ import { useRoute } from "vue-router";
 import SiteHeader from "./components/SiteHeader.vue";
 import SiteFooter from "./components/SiteFooter.vue";
 import IntroLoader from "./components/IntroLoader.vue";
+import ScrollProgress from "./components/ScrollProgress.vue";
 import StatusHud from "./components/StatusHud.vue";
 import ObjectiveToast from "./components/ObjectiveToast.vue";
 import TargetReticle from "./components/TargetReticle.vue";
@@ -58,6 +59,7 @@ useCityCamera(loading);
   />
 
 
+  <ScrollProgress />
   <SiteHeader />
   <main class="flex-1">
     <!-- Pas de <Transition> ici : avec les vues lazy, ça pouvait laisser la page

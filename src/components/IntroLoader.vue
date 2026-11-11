@@ -54,15 +54,6 @@ const stepLabel = computed(() =>
 /* Les formes filaires laissent place aux blocs de texte à mi-parcours. */
 const blocks = computed(() => pct.value >= 55);
 
-/* Astuces affichées pendant le chargement : toutes renvoient à quelque
-   chose qui existe vraiment sur le site. */
-const TIPS = [
-  "Astuce : survolez une carte projet pour la verrouiller, puis cliquez pour l'analyser.",
-  "Astuce : dans la stack technique, les flèches changent de catégorie de compétences.",
-  "Astuce : le CV est téléchargeable depuis la section À propos.",
-  "Astuce : quelque chose se cache dans le pied de page.",
-];
-const tip = TIPS[Math.floor(Math.random() * TIPS.length)];
 
 const timers: number[] = [];
 let progressIv: number | undefined;
@@ -174,7 +165,6 @@ onBeforeUnmount(() => {
       >
         <span class="boot-line-fill" :style="{ width: `${pct}%` }" />
       </div>
-      <p class="boot-tip"><span>{{ tip }}</span></p>
     </div>
 
     <!-- Écran titre -->
@@ -364,22 +354,6 @@ onBeforeUnmount(() => {
   position: absolute;
   inset: 0 auto 0 0;
   background: var(--foreground);
-}
-/* Astuce surlignée ligne par ligne : chaque ligne a son propre fond blanc
-   (`box-decoration-break`), comme du texte sélectionné. */
-.boot-tip {
-  margin: 1.6rem 0 0;
-  max-width: 36rem;
-  text-align: center;
-  font-size: 16px;
-  line-height: 1.75;
-}
-.boot-tip span {
-  background: var(--foreground);
-  color: #000;
-  padding: 2px 6px;
-  -webkit-box-decoration-break: clone;
-  box-decoration-break: clone;
 }
 
 /* ---- écran titre ------------------------------------------- */
